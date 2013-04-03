@@ -96,7 +96,7 @@ namespace HKFramework.Kinect
             switch (args.Result.Text.ToUpperInvariant())
             {
                 case "START":
-                    Main.SetState(typeof(GameHandler));
+                    KinectGame.Main.SetState(typeof(KinectGame.Components.GameHandler));
                     break;
                 default:
                     break;

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using HKFramework;
 using HKFramework.TwoD.Entity;
+using KinectGame;
 
 namespace HKFramework.HUD
 {

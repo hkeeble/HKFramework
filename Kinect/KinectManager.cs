@@ -12,7 +12,7 @@ using Microsoft.Kinect;
 using HKFramework;
 
 
-namespace KinectGame.Components
+namespace HKFramework.Kinect
 {
     public class KinectManager : Microsoft.Xna.Framework.GameComponent
     {

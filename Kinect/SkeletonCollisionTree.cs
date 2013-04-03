@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using HKFramework;
+using HKFramework.MathLib;
 using HKFramework.Kinect;
 using HKFramework.HUD;
 
@@ -84,13 +85,13 @@ namespace HKFramework.Kinect
             public void Update(Vector2 JointA, Vector2 JointB)
             {
                 _prevMidPoint = _currentMidPoint;
-                _currentMidPoint = MidPoint(JointA, JointB);
+                _currentMidPoint = MathLibrary.MidPoint(JointA, JointB);
                 _currentMidPoint.X -= _width / 2;
                 _currentMidPoint.Y -= Vector2.Distance(JointA, JointB) / 2;
 
                 // Calculate new collision rectangle
                 _collisionRect = new SATRectangle(new Rectangle((int)_currentMidPoint.X, (int)_currentMidPoint.Y, 60, (int)Vector2.Distance(JointA,
-                    JointB)), AngleBetweenJoints(JointA, JointB));
+                    JointB)), MathLibrary.AngleBetween(JointA, JointB));
 
                 // Calculate velocity of limb
                 _velocity = _currentMidPoint - _prevMidPoint;
@@ -134,18 +135,6 @@ namespace HKFramework.Kinect
                 }
             }
 
-            private Vector2 MidPoint(Vector2 a, Vector2 b)
-            {
-                return new Vector2((a.X + b.X) / 2, (a.Y + b.Y) / 2);
-            }
-
-            private float AngleBetweenJoints(Vector2 a, Vector2 b)
-            {
-                a = a - b;
-                b = new Vector2(0, -1);
-                return MathHelper.ToDegrees(-(float)Math.Atan2((a.X - b.X), (a.Y - b.Y)));
-            }
-
             public Vector2 Velocity { get { return _velocity; } }
         }
 
@@ -180,13 +169,13 @@ namespace HKFramework.Kinect
             Color[] data = new Color[MainTexture.Width * MainTexture.Height];
             MainTexture.GetData<Color>(data);
             for (int i = 0; i < data.Length; i++)
-                data[i].A = HUD.HUD_ALPHA;
+                data[i].A = HUD.HUD.HUD_ALPHA;
             MainTexture.SetData<Color>(data);
 
             data = new Color[HeadTexture.Width * HeadTexture.Height];
             HeadTexture.GetData<Color>(data);
             for (int i = 0; i < data.Length; i++)
-                data[i].A = HUD.HUD_ALPHA;
+                data[i].A = HUD.HUD.HUD_ALPHA;
             HeadTexture.SetData<Color>(data);
 
             LeftForeArm = new Limb(40, MainTexture);
