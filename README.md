@@ -1,4 +1,4 @@
 HKFramework
 ===========
 
-A game development framework developed for C# and XNA.
+A game development framework for C# and XNA.
