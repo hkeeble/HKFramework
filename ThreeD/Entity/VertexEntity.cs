@@ -18,14 +18,12 @@ namespace HKFramework.ThreeD.Entity
         protected VertexBuffer _vertexBuffer;
         protected int[] _indices;
         protected IndexBuffer _indexBuffer;
-        protected BasicEffect _effect;
         protected PrimitiveType _primType;
         protected int _primCount;
 
         public VertexEntity(Vector3 position, Vector3 rotation, PrimitiveType primitiveType)
             : base(position, rotation)
         {
-            _effect = new BasicEffect(GameUtils.GetUtil<GraphicsDevice>());
             _primType = primitiveType;
         }
 
@@ -66,15 +64,14 @@ namespace HKFramework.ThreeD.Entity
 
         public virtual void Draw()
         {
-            _effect.World = RotationMatrix * Matrix.CreateTranslation(Position);
-            _effect.View = Camera.View;
-            _effect.Projection = Camera.Projection;
-            _effect.VertexColorEnabled = true;
-            _effect.EnableDefaultLighting();
+            GlobalEffect.SetWVPMatrix((RotationMatrix * Matrix.CreateTranslation(Position)) * Camera.View * Camera.Projection);
+            GlobalEffect.SetTechnique("AmbientDiffuseSpecular");
+            GlobalEffect.SetEyePosition(new Vector4(Camera.Position+Camera.Target, 0));
+
             GameUtils.GetUtil<GraphicsDevice>().SetVertexBuffer(_vertexBuffer);
             GameUtils.GetUtil<GraphicsDevice>().Indices = _indexBuffer;
 
-            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in GlobalEffect.Passes)
             {
                 pass.Apply();
                 GameUtils.GetUtil<GraphicsDevice>().DrawUserIndexedPrimitives(_primType, _vertices, 0, _vertices.Length, _indices, 0, _primCount, VertexPositionColorNormal.VertexDeclaration);
