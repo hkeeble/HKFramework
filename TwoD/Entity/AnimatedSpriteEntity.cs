@@ -13,11 +13,20 @@ namespace HKFramework.TwoD.Entity
         private int _millisecondsBetweenFrame;
         private Point _currentFrame;
 
+        AnimationType _animType;
+
+        private int _animDir = 1;
+
         protected Rectangle _frameRect;
         private int _frameWidth, _frameHeight;
         private int _sheetFrameWidth, _sheetFrameHeight;
 
-        public AnimatedSpriteEntity(Texture2D texture, Vector2 position, int millisecondsBetweenFrame, int frameWidth, int frameHeight) : base(texture, position)
+        public AnimatedSpriteEntity(Texture2D texture, Vector2 position, int millisecondsBetweenFrame, int frameWidth, int frameHeight, AnimationType animationType) : base(texture, position)
+        {
+            Init(millisecondsBetweenFrame, frameWidth, frameHeight, animationType);
+        }
+
+        private void Init(int millisecondsBetweenFrame, int frameWidth, int frameHeight, AnimationType animationType)
         {
             _frameWidth = frameWidth;
             _frameHeight = frameHeight;
@@ -26,8 +35,16 @@ namespace HKFramework.TwoD.Entity
             _collisionRect = new Rectangle(0, 0, _frameWidth, _frameHeight);
             _millisecondsBetweenFrame = millisecondsBetweenFrame;
 
+            _animType = animationType;
+
             _sheetFrameWidth = _texture.Width / frameWidth;
             _sheetFrameHeight = _texture.Height / frameHeight;
+        }
+
+        public void SetSheet(Texture2D newSheet, int millisecondsBetweenFrame, int frameWidth, int frameHeight, AnimationType animationType)
+        {
+            Init(millisecondsBetweenFrame, frameWidth, frameHeight, animationType);
+            _texture = newSheet;
         }
 
         public override void Draw()
@@ -42,9 +59,20 @@ namespace HKFramework.TwoD.Entity
             if(_timeToNextFrame >= TimeSpan.FromMilliseconds(_millisecondsBetweenFrame))
             {
                 _timeToNextFrame = TimeSpan.Zero;
-                _currentFrame.X++;
-                if (_currentFrame.X > _sheetFrameWidth - 1)
-                    _currentFrame.X = 0;
+                _currentFrame.X += _animDir;
+                if (_currentFrame.X > _sheetFrameWidth - 1 || _currentFrame.X < 0)
+                {
+                    if(_animType == AnimationType.Loop)
+                        _currentFrame.X = 0;
+                    if (_animType == AnimationType.Reverse)
+                    {
+                        if (_animDir == -1)
+                            _currentFrame.X = 0;
+                        else
+                            _currentFrame.X = _sheetFrameWidth - 1;
+                        _animDir = -_animDir;
+                    }
+                }
                 _frameRect = new Rectangle(_currentFrame.X * _frameWidth, _currentFrame.Y * _frameHeight, _frameWidth, _frameHeight);
             }
 

@@ -62,6 +62,9 @@ namespace HKFramework.ThreeD
                 _shakeOffset = new Vector3(NextFloat(), NextFloat(), NextFloat() * _shakeStrength);
                 _direction += _shakeOffset;
             }
+            
+            _boundingSphere = new BoundingSphere(_position, 0.1f);
+
             CreateLookAt();
 
             base.Update(gameTime);
@@ -109,7 +112,7 @@ namespace HKFramework.ThreeD
         }
 
         public static Vector3 Target { get { return _target; } set { _target = value; } }
-        public static Vector3 Position { get { return _position; } }
+        public static Vector3 Position { get { return _position; } set { _position = value; } }
         public static float AspectRatio { get { return _aspectRatio; } set { _aspectRatio = value; } }
         public static Matrix View { get { return _view; } set { _view = value; } }
         public static Matrix Projection { get { return _projection; } set { _projection = value; } }

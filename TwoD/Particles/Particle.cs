@@ -13,10 +13,13 @@ namespace HKFramework.TwoD.Particles
         private Texture2D _particleBase; // Base texture used to represent the particle
         private Vector2 _position;
         private Vector2 _direction;
+        private float _maxDist;
         private float _speed;
         private float _radius;
         private Color _color;
         private TimeSpan _life; // Time remaining
+        private Emitter _parent;
+        private Random _random;
         #endregion
 
         /// <summary>
@@ -29,7 +32,8 @@ namespace HKFramework.TwoD.Particles
         /// <param name="color">The color of the particle.</param>
         /// <param name="life">The lifespan of the particle in seconds.</param>
         /// <param name="speed">The speed the particle moves at.</param>
-        public Particle(Texture2D particleBase, Vector2 position, Vector2 direction, float radius, Color color, TimeSpan life, float speed)
+        /// <param name="maxDistance">The maximum distance a particle can move from the emitter.</param>
+        public Particle(Emitter parent, Texture2D particleBase, Vector2 position, Vector2 direction, float radius, Color color, TimeSpan life, float speed, Range maxDistance)
         {
             _particleBase = particleBase;
             _position = position;
@@ -38,6 +42,10 @@ namespace HKFramework.TwoD.Particles
             _radius = radius;
             _color = color;
             _life = life;
+            _parent = parent;
+
+            _random = new Random(DateTime.Now.Millisecond);
+            _maxDist = MathLib.MathLibrary.LinearInterpolate(maxDistance.Minimum, maxDistance.Maximum, _random.NextDouble());
         }
 
         /// <summary>
@@ -48,6 +56,10 @@ namespace HKFramework.TwoD.Particles
         public bool Update(GameTime gameTime)
         {
             _position += _direction * _speed;
+
+            if (Vector2.Distance(_position, _parent.Position) > _maxDist)
+                return false;
+
             _life -= gameTime.ElapsedGameTime;
             if (_life > TimeSpan.Zero)
                 return true;

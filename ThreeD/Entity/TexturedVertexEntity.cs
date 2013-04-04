@@ -9,6 +9,7 @@ namespace HKFramework.ThreeD.Entity
 {
     public class TexturedVertexEntity : VertexEntity
     {
+        protected BasicEffect _effect;
         protected new VertexPositionNormalTexture[] _vertices { get; set; }
         protected Texture2D _texture;
 
@@ -21,6 +22,8 @@ namespace HKFramework.ThreeD.Entity
         public TexturedVertexEntity(Vector3 position, Vector3 rotation, PredefinedObject shape, Color color, Vector3 scale, Texture2D texture)
             : base(position, rotation, PrimitiveType.TriangleList)
         {
+            _effect = new BasicEffect(GameUtils.GetUtil<GraphicsDevice>());
+
             if (shape == PredefinedObject.Plane)
             {
                 _texture = texture;
@@ -64,21 +67,21 @@ namespace HKFramework.ThreeD.Entity
 
         public override void Draw()
         {
-            //_effect.World = RotationMatrix * Matrix.CreateTranslation(Position);
-            //_effect.View = Camera.View;
-            //_effect.Projection = Camera.Projection;
-            //_effect.EnableDefaultLighting();
-            //_effect.VertexColorEnabled = false;
-            //_effect.TextureEnabled = true;
-            //_effect.Texture = _texture;
-            //GameUtils.GetUtil<GraphicsDevice>().SetVertexBuffer(_vertexBuffer);
-            //GameUtils.GetUtil<GraphicsDevice>().Indices = _indexBuffer;
+            _effect.World = RotationMatrix * Matrix.CreateTranslation(Position);
+            _effect.View = Camera.View;
+            _effect.Projection = Camera.Projection;
+            _effect.EnableDefaultLighting();
+            _effect.VertexColorEnabled = false;
+            _effect.TextureEnabled = true;
+            _effect.Texture = _texture;
+            GameUtils.GetUtil<GraphicsDevice>().SetVertexBuffer(_vertexBuffer);
+            GameUtils.GetUtil<GraphicsDevice>().Indices = _indexBuffer;
 
-            //foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
-            //{
-            //    pass.Apply();
-            //    GameUtils.GetUtil<GraphicsDevice>().DrawUserIndexedPrimitives(_primType, _vertices, 0, _vertices.Length, _indices, 0, _primCount, VertexPositionNormalTexture.VertexDeclaration);
-            //}
+            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                GameUtils.GetUtil<GraphicsDevice>().DrawUserIndexedPrimitives(_primType, _vertices, 0, _vertices.Length, _indices, 0, _primCount, VertexPositionNormalTexture.VertexDeclaration);
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ namespace HKFramework.TwoD.Particles
         private Range _sizeRange; // The range of sizes given to particles
         private Range _lifeRange; // Range used to determine lifespan in seconds
         private Range _speedRange; // The range of speeds applied to particles
+        private Range _maxDistance; // The range of possible maximum distances a particle can be from the emitter
         private Vector2 _dirBoundA, _dirBoundB; // Used to store bounds for the direction particles move
 
         private TimeSpan _lifeSpan; // The life-span of the emitter
@@ -32,7 +33,7 @@ namespace HKFramework.TwoD.Particles
         Random random;
 
         public Emitter(Vector2 position, Texture2D particleBase, Color particleColor, Range sizeRange, int maxParticles, float secondsBetweenSpawn,
-            Vector2 directionBoundA, Vector2 directionBoundB, Range lifeRange, TimeSpan lifeSpan, Range speedRange)
+            Vector2 directionBoundA, Vector2 directionBoundB, Range lifeRange, TimeSpan lifeSpan, Range speedRange, Range maxDistance)
         {
             _position = position;
             _particleBase = particleBase;
@@ -48,6 +49,8 @@ namespace HKFramework.TwoD.Particles
 
             _dirBoundA = directionBoundA;
             _dirBoundB = directionBoundB;
+
+            _maxDistance = maxDistance;
 
             _particles = new List<Particle>();
             random = new Random(DateTime.Now.Millisecond);
@@ -69,10 +72,10 @@ namespace HKFramework.TwoD.Particles
                     {
                         _timeSinceSpawn = TimeSpan.Zero;
 
-                        _particles.Add(new Particle(_particleBase, _position, Vector2.Lerp(_dirBoundA, _dirBoundB, (float)random.NextDouble()),
+                        _particles.Add(new Particle(this, _particleBase, _position, Vector2.Lerp(_dirBoundA, _dirBoundB, (float)random.NextDouble()),
                             MathLib.MathLibrary.LinearInterpolate(_sizeRange.Minimum, _sizeRange.Maximum, random.NextDouble()), _particleColor,
                             new TimeSpan(0, 0, (int)MathLib.MathLibrary.LinearInterpolate(_lifeRange.Maximum, _lifeRange.Maximum, random.NextDouble())),
-                            MathLib.MathLibrary.LinearInterpolate(_speedRange.Minimum, _speedRange.Maximum, random.NextDouble())));
+                            MathLib.MathLibrary.LinearInterpolate(_speedRange.Minimum, _speedRange.Maximum, random.NextDouble()), _maxDistance));
                     }
                 }
             }
@@ -91,5 +94,6 @@ namespace HKFramework.TwoD.Particles
         }
 
         public int ParticleCount { get { return _particles.Count; } }
+        public Vector2 Position { get { return _position; } }
     }
 }

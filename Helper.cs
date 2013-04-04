@@ -53,5 +53,14 @@ namespace HKFramework.MathLib
             b = new Vector2(0, -1);
             return MathHelper.ToDegrees(-(float)Math.Atan2((a.X - b.X), (a.Y - b.Y)));
         }
+
+        /// <summary>
+        /// Rotates a given vector by radians.
+        /// </summary>
+        public static void RotateVector(float radians, ref Vector2 vector)
+        {
+            Matrix matrix = Matrix.CreateRotationY(radians);
+            vector = Vector2.Transform(vector, matrix);
+        }
     }
 }
