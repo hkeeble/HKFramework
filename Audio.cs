@@ -7,11 +7,13 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace HKFramework
 {
-    class Audio
+    public class Audio
     {
         private static AudioEngine audioEngine;
         private static SoundBank soundBank;
         private static WaveBank waveBank;
+
+        private static bool _enabled = true;
 
         private static List<Cue> soundsPlaying;
 
@@ -25,9 +27,12 @@ namespace HKFramework
 
         public static void Play(string cueName)
         {
-            Cue cue = soundBank.GetCue(cueName);
-            cue.Play();
-            soundsPlaying.Add(cue);
+            if (_enabled)
+            {
+                Cue cue = soundBank.GetCue(cueName);
+                cue.Play();
+                soundsPlaying.Add(cue);
+            }
         }
 
         public static void Stop(string cueName)
@@ -62,6 +67,20 @@ namespace HKFramework
                         return false;
                 }
             return false;
+        }
+
+        public static bool Enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+                if (_enabled == false)
+                    StopAll();
+            }
         }
     }
 }

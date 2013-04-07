@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace HKFramework.Input
+namespace HKFramework
 {
     public class InputHandler : Microsoft.Xna.Framework.GameComponent
     {
@@ -87,6 +87,12 @@ namespace HKFramework.Input
         }
 
         #endregion
+
+        public static void ClearBuffers()
+        {
+            prevGamePadState = new GamePadState();
+            currentGamePadState = new GamePadState();
+        }
 
         public override void Initialize()
         {

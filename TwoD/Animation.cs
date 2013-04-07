@@ -18,11 +18,9 @@ namespace HKFramework.TwoD
     /// <summary>
     /// Class defines a simple animation, that has no collision rect, does not move and is purely for aesthetics.
     /// </summary>
-    public class Animation
+    public class Animation : Graphic
     {
-        private Texture2D _texture;
-        public Vector2 Position;
-
+        #region Declarations
         private TimeSpan _timeToNextFrame;
         private int _millisecondsBetweenFrame;
         private Point _currentFrame;
@@ -34,25 +32,40 @@ namespace HKFramework.TwoD
         AnimationType _animType;
         private int _animDir = 1;
         public bool Playing = true;
+        #endregion
 
-        public Animation(Texture2D texture, Vector2 position, int millisecondsBetweenFrame, int frameWidth, int frameHeight, AnimationType animationType)
+        /// <summary>
+        /// Constructs a new animation.
+        /// </summary>
+        /// <param name="spriteSheet">The sprite sheet for the animation to use.</param>
+        /// <param name="position">The screen position of the animation.</param>
+        /// <param name="scale">The scale of the animation.</param>
+        /// <param name="millisecondsBetweenFrame">The milliseconds between each frame in the animation.</param>
+        /// <param name="frameWidth">The width of each animation frame.</param>
+        /// <param name="frameHeight">The height of each animation frame.</param>
+        /// <param name="animationType">The type of animation.</param>
+        public Animation(Texture2D spriteSheet, Vector2 position, Vector2 scale, int millisecondsBetweenFrame, int frameWidth, int frameHeight, AnimationType animationType) :
+            base(spriteSheet, position, scale)
         {
-            _texture = texture;
-            Position = position;
             _millisecondsBetweenFrame = millisecondsBetweenFrame;
             _frameWidth = frameWidth;
             _frameHeight = frameHeight;
             _sheetFrameWidth = _texture.Width / frameWidth;
             _sheetFrameHeight = _texture.Height / frameHeight;
-
             _animType = animationType;
         }
 
+        /// <summary>
+        /// Draws the animation to the screen.
+        /// </summary>
         public void Draw()
         {
-            GameUtils.GetUtil<SpriteBatch>().Draw(_texture, Position, _frameRect, Color.White);
+            GameUtils.GetUtil<SpriteBatch>().Draw(_texture, Position, _frameRect, Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 1f);
         }
 
+        /// <summary>
+        /// Updates the animation, changing frames where neccesary.
+        /// </summary>
         public void Update(GameTime gameTime)
         {
             if(Playing)
@@ -86,6 +99,9 @@ namespace HKFramework.TwoD
             }
         }
 
+        /// <summary>
+        /// The size of an individual animation frame.
+        /// </summary>
         public Rectangle FrameSize { get { return new Rectangle(0, 0, _frameWidth, _frameHeight); } }
     }
 }

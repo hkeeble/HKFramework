@@ -40,6 +40,7 @@ namespace HKFramework.ThreeD.Entity
         }
 
         protected Matrix RotationMatrix { get { return (Matrix.CreateRotationX(_rotation.X) * Matrix.CreateRotationY(_rotation.Y) * Matrix.CreateRotationZ(_rotation.Z)); } }
+        protected Matrix World { get { return RotationMatrix * Matrix.CreateTranslation(Position); } }
         public Vector3 Position { get { return _position; } set { _position = value; } }
         public Vector3 Rotation { get { return new Vector3(MathHelper.ToDegrees(_rotation.X), MathHelper.ToDegrees(_rotation.Y), MathHelper.ToDegrees(_rotation.Z)); } }
     }

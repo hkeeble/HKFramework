@@ -64,7 +64,7 @@ namespace HKFramework.ThreeD.Entity
 
         public virtual void Draw()
         {
-            GlobalEffect.SetWVPMatrix((RotationMatrix * Matrix.CreateTranslation(Position)) * Camera.View * Camera.Projection);
+            GlobalEffect.SetWVPMatrix(World * Camera.View * Camera.Projection);
             GlobalEffect.SetTechnique("AmbientDiffuseSpecular");
             GlobalEffect.SetEyePosition(new Vector4(Camera.Position+Camera.Target, 0));
 

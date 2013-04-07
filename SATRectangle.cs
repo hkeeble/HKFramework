@@ -9,7 +9,7 @@ namespace HKFramework
     /// <summary>
     /// A rectangle that can be rotated and uses the SAT algorithm for collision detection.
     /// </summary>
-    class SATRectangle
+    public class SATRectangle
     {
         private Rectangle _collisionRectangle;
         private float _rotation;

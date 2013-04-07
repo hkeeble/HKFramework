@@ -45,7 +45,7 @@ namespace HKFramework.TwoD.Particles
             _parent = parent;
 
             _random = new Random(DateTime.Now.Millisecond);
-            _maxDist = MathLib.MathLibrary.LinearInterpolate(maxDistance.Minimum, maxDistance.Maximum, _random.NextDouble());
+            _maxDist = Maths.LinearInterpolate(maxDistance.Minimum, maxDistance.Maximum, _random.NextDouble());
         }
 
         /// <summary>

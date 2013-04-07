@@ -17,6 +17,7 @@ namespace HKFramework.TwoD.Particles
         private Range _speedRange; // The range of speeds applied to particles
         private Range _maxDistance; // The range of possible maximum distances a particle can be from the emitter
         private Vector2 _dirBoundA, _dirBoundB; // Used to store bounds for the direction particles move
+        private bool _dirBounds; // Whether or not direction bounds are supplied
 
         private TimeSpan _lifeSpan; // The life-span of the emitter
 
@@ -49,11 +50,19 @@ namespace HKFramework.TwoD.Particles
 
             _dirBoundA = directionBoundA;
             _dirBoundB = directionBoundB;
+            _dirBounds = true;
 
             _maxDistance = maxDistance;
 
             _particles = new List<Particle>();
             random = new Random(DateTime.Now.Millisecond);
+        }
+
+        public Emitter(Vector2 position, Texture2D particleBase, Color particleColor, Range sizeRange, int maxParticles, float secondsBetweenSpawn, Range lifeRange, TimeSpan lifeSpan,
+            Range speedRange, Range maxDistance) : this(position, particleBase, particleColor, sizeRange, maxParticles, secondsBetweenSpawn, Vector2.Zero, Vector2.Zero, lifeRange, lifeSpan,
+            speedRange, maxDistance)
+        {
+            _dirBounds = false;
         }
 
         public void Update(GameTime gameTime)
@@ -72,10 +81,21 @@ namespace HKFramework.TwoD.Particles
                     {
                         _timeSinceSpawn = TimeSpan.Zero;
 
-                        _particles.Add(new Particle(this, _particleBase, _position, Vector2.Lerp(_dirBoundA, _dirBoundB, (float)random.NextDouble()),
-                            MathLib.MathLibrary.LinearInterpolate(_sizeRange.Minimum, _sizeRange.Maximum, random.NextDouble()), _particleColor,
-                            new TimeSpan(0, 0, (int)MathLib.MathLibrary.LinearInterpolate(_lifeRange.Maximum, _lifeRange.Maximum, random.NextDouble())),
-                            MathLib.MathLibrary.LinearInterpolate(_speedRange.Minimum, _speedRange.Maximum, random.NextDouble()), _maxDistance));
+                        if (_dirBounds)
+                        {
+                            _particles.Add(new Particle(this, _particleBase, _position, Vector2.Lerp(_dirBoundA, _dirBoundB, (float)random.NextDouble()),
+                                Maths.LinearInterpolate(_sizeRange.Minimum, _sizeRange.Maximum, random.NextDouble()), _particleColor,
+                                new TimeSpan(0, 0, (int)Maths.LinearInterpolate(_lifeRange.Maximum, _lifeRange.Maximum, random.NextDouble())),
+                                Maths.LinearInterpolate(_speedRange.Minimum, _speedRange.Maximum, random.NextDouble()), _maxDistance));
+                        }
+                        else
+                        {
+                            int dirMultiplier = random.Next(-1, 2);
+                            _particles.Add(new Particle(this, _particleBase, _position, new Vector2((float)random.NextDouble() * dirMultiplier, (float)random.NextDouble() * dirMultiplier),
+                                            Maths.LinearInterpolate(_sizeRange.Minimum, _sizeRange.Maximum, random.NextDouble()), _particleColor,
+                                            new TimeSpan(0, 0, (int)Maths.LinearInterpolate(_lifeRange.Maximum, _lifeRange.Maximum, random.NextDouble())),
+                                            Maths.LinearInterpolate(_speedRange.Minimum, _speedRange.Maximum, random.NextDouble()), _maxDistance));
+                        }
                     }
                 }
             }
